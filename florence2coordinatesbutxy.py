@@ -6,69 +6,61 @@ class Florence2toCoordinatesButxy:
     def INPUT_TYPES(s):
         return {
             "required": {
-                # Changed 'JSON' to 'STRING' for 'data' input
-                "data": ("STRING",),
-                "source": ("IMAGE",),
+                "data": ("JSON",),
+                "source": ("IMAGE",),  # Added to get source image dimensions
                 "index": ("STRING", {"default": "0"}),
                 "batch": ("BOOLEAN", {"default": False}),
             },
         }
 
-    # Changed 'BBOX' to 'STRING' in RETURN_TYPES
-    RETURN_TYPES = ("INT", "INT", "STRING")
+    RETURN_TYPES = ("INT", "INT", "BBOX")
     RETURN_NAMES = ("x", "y", "bboxes")
     FUNCTION = "segment"
-    CATEGORY = "rinsanga"
+    CATEGORY = "RinaRalte"
 
     def segment(self, data, source, index, batch=False):
-        print("Data received:", data)
+        print(data)
         try:
-            # Parse the JSON string
-            coordinates = json.loads(data)
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON data: {e}")
-
-        if not coordinates:
-            return (0, 0, "[]")
-
+            coordinates = data.replace("'", '"')
+            coordinates = json.loads(coordinates)
+        except:
+            coordinates = data
+        print("Type of data:", type(data))
+        print("Data:", data)
+        if len(data) == 0:
+            return 0, 0, []  # Return integers
         top_left_x_points = []
         top_left_y_points = []
-
-        if index.strip():
+        if index.strip():  # Check if index is not empty
             indexes = [int(i) for i in index.split(",")]
-        else:
-            indexes = list(range(len(coordinates[0])))
-
+        else:  # If index is empty, use all indices from data[0]
+            indexes = list(range(len(data[0])))
         print("Indexes:", indexes)
         bboxes = []
-
         if batch:
             for idx in indexes:
-                if 0 <= idx < len(coordinates[0]):
-                    for i in range(len(coordinates)):
-                        bbox = coordinates[i][idx]
+                if 0 <= idx < len(data[0]):
+                    for i in range(len(data)):
+                        bbox = data[i][idx]
                         min_x, min_y, max_x, max_y = bbox
+                        # Just use min_x and min_y (top-left corner)
                         top_left_x_points.append(int(min_x))
                         top_left_y_points.append(int(min_y))
                         bboxes.append(bbox)
         else:
             for idx in indexes:
-                if 0 <= idx < len(coordinates[0]):
-                    bbox = coordinates[0][idx]
+                if 0 <= idx < len(data[0]):
+                    bbox = data[0][idx]
                     min_x, min_y, max_x, max_y = bbox
+                    # Just use min_x and min_y (top-left corner)
                     top_left_x_points.append(int(min_x))
                     top_left_y_points.append(int(min_y))
                     bboxes.append(bbox)
                 else:
                     raise ValueError(f"There's nothing in index: {idx}")
-
+        # Return integers
         x_coordinate = top_left_x_points[0] if top_left_x_points else 0
         y_coordinate = top_left_y_points[0] if top_left_y_points else 0
-
         print("Top-Left X:", x_coordinate)
         print("Top-Left Y:", y_coordinate)
-
-        # Convert bboxes list to JSON string for the return
-        bboxes_json = json.dumps(bboxes)
-
-        return (x_coordinate, y_coordinate, bboxes_json)
+        return x_coordinate, y_coordinate, bboxes
