@@ -7,7 +7,7 @@ class Florence2toCoordinatesButxy:
         return {
             "required": {
                 "data": ("JSON",),
-                "source": ("IMAGE",),  # Added to get source image dimensions
+                "source": ("IMAGE",),
                 "index": ("STRING", {"default": "0"}),
                 "batch": ("BOOLEAN", {"default": False}),
             },
