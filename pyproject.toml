@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-florence2xy"
+description = "NODES:Florence2 Coordinates (XY Split), Phi-3.5 Vision Instruct."
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/Rinsanga1/comfyui-florence2xy"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "comfyui-florence2xy"
+Icon = ""
