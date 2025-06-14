@@ -9,6 +9,6 @@ Repository = "https://github.com/Rinsanga1/comfyui-florence2xy"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "rinaralte"
 DisplayName = "comfyui-florence2xy"
 Icon = ""
